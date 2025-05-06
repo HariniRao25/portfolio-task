@@ -1,364 +1,433 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { 
+  Github, 
+  Mail, 
+  Phone, 
+  Code, 
+  Database, 
+  Globe, 
+  BookOpen, 
+  Terminal, 
+  ChevronRight,
+  ExternalLink,
+  Menu,
+  X
+} from 'lucide-react';
 
-export default function App() {
+// Main portfolio component
+export default function Portfolio() {
+  const [activeSection, setActiveSection] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+  const [scrolled, setScrolled] = useState(false);
+
+  // Handle scroll events to change header appearance
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Navigation links
+  const navLinks = [
+    { name: 'Home', id: 'home' },
+    { name: 'About', id: 'about' },
+    { name: 'Skills', id: 'skills' },
+    { name: 'Education', id: 'education' },
+    { name: 'Projects', id: 'projects' },
+    { name: 'Contact', id: 'contact' },
+  ];
+
+  // Toggle mobile menu
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Scroll to section
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      setActiveSection(id);
+      setIsMenuOpen(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      {/* Header Section */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="font-bold text-2xl text-indigo-600">Harini</h1>
-          
-          {/* Mobile Menu Button */}
+    <div className="min-h-screen bg-gray-900 text-gray-100">
+      {/* Animated background */}
+      <div className="fixed inset-0 z-0 opacity-20">
+        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-blue-500 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-purple-500 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Header */}
+      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-gray-900/80 backdrop-blur shadow-lg' : 'bg-transparent'}`}>
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center">
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+              Harini
+            </span>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-6">
+            {navLinks.map((link) => (
+              <button
+                key={link.id}
+                onClick={() => scrollToSection(link.id)}
+                className={`transition-all duration-300 ${
+                  activeSection === link.id
+                    ? 'text-blue-400 font-medium'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {link.name}
+              </button>
+            ))}
+          </nav>
+
+          {/* Mobile menu button */}
           <button 
-            className="md:hidden p-2 rounded-md focus:outline-none" 
+            className="md:hidden text-gray-400 hover:text-white" 
             onClick={toggleMenu}
           >
-            {isMenuOpen ? 
-              <span className="block w-6 h-px bg-gray-800 rotate-45 translate-y-1"></span> : 
-              <div className="space-y-1.5">
-                <span className="block w-6 h-px bg-gray-800"></span>
-                <span className="block w-6 h-px bg-gray-800"></span>
-                <span className="block w-6 h-px bg-gray-800"></span>
-              </div>
-            }
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <a href="#home" className="text-gray-700 hover:text-indigo-600 transition-colors">Home</a>
-            <a href="#about" className="text-gray-700 hover:text-indigo-600 transition-colors">About</a>
-            <a href="#projects" className="text-gray-700 hover:text-indigo-600 transition-colors">Projects</a>
-            <a href="#contact" className="text-gray-700 hover:text-indigo-600 transition-colors">Contact</a>
-          </nav>
         </div>
-        
+
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-t">
-            <div className="container mx-auto px-4 py-2 flex flex-col space-y-3">
-              <a href="#home" className="text-gray-700 py-2 hover:text-indigo-600 transition-colors" onClick={toggleMenu}>Home</a>
-              <a href="#about" className="text-gray-700 py-2 hover:text-indigo-600 transition-colors" onClick={toggleMenu}>About</a>
-              <a href="#projects" className="text-gray-700 py-2 hover:text-indigo-600 transition-colors" onClick={toggleMenu}>Projects</a>
-              <a href="#contact" className="text-gray-700 py-2 hover:text-indigo-600 transition-colors" onClick={toggleMenu}>Contact</a>
+          <div className="md:hidden bg-gray-800 shadow-lg">
+            <div className="flex flex-col space-y-4 p-4">
+              {navLinks.map((link) => (
+                <button
+                  key={link.id}
+                  onClick={() => scrollToSection(link.id)}
+                  className={`transition-all duration-300 ${
+                    activeSection === link.id
+                      ? 'text-blue-400 font-medium'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {link.name}
+                </button>
+              ))}
             </div>
           </div>
         )}
       </header>
 
-      {/* Hero Section */}
-      <section id="home" className="bg-indigo-700 text-white py-20 md:py-32">
-  <div className="container mx-auto px-4 flex flex-col items-center text-center">
-    
-    {/* Profile Image */}
-<div className="w-32 h-32 mb-6 rounded-full overflow-hidden border-4 border-white shadow-lg">
-  <img 
-    src="https://media.istockphoto.com/id/1483473258/photo/smiling-young-woman-professional-in-formal-wear-with-arms-crossed-and-looking-at-camera.webp?a=1&b=1&s=612x612&w=0&k=20&c=Lvu-u4DzvgAExdTm2cXRVc-4pqXcKafhDrZkictyVUU="
-    alt="Profile"
-    className="object-cover w-full h-full"
-  />
-</div>
-
-
-    {/* Name and Title */}
-    <h1 className="text-4xl md:text-5xl font-bold mb-6">Harini</h1>
-    <h2 className="text-2xl md:text-3xl mb-8">BTech Information Technology Student</h2>
-    <p className="text-lg md:text-xl max-w-2xl mb-10">
-      A passionate developer focused on creating impactful solutions through code.
-    </p>
-
-    {/* Buttons */}
-    <div className="flex flex-col sm:flex-row gap-4">
-      <a 
-        href="#projects" 
-        className="bg-white text-indigo-700 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition-colors"
-      >
-        View My Work
-      </a>
-      <a 
-        href="#contact" 
-        className="bg-transparent border-2 border-white px-6 py-3 rounded-md font-medium hover:bg-white hover:text-indigo-700 transition-colors"
-      >
-        Contact Me
-      </a>
-    </div>
-  </div>
-</section>
-
-
-      {/* About Section */}
-      <section id="about" className="py-20 bg-white">
-  <div className="container mx-auto px-4">
-    <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">About Me</h2>
-
-    <div className="flex flex-col md:flex-row gap-10 items-center">
-      <div className="md:w-1/3 flex justify-center">
-        <div className="w-64 h-64 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden">
-          <img 
-            src="https://media.istockphoto.com/id/1483473258/photo/smiling-young-woman-professional-in-formal-wear-with-arms-crossed-and-looking-at-camera.webp?a=1&b=1&s=612x612&w=0&k=20&c=Lvu-u4DzvgAExdTm2cXRVc-4pqXcKafhDrZkictyVUU=" 
-            alt="Profile" 
-            className="rounded-full w-full h-full object-cover"
-          />
-        </div>
-      </div>
-
-      <div className="md:w-2/3">
-        <h3 className="text-2xl font-semibold mb-4 text-gray-800">Harini</h3>
-        <p className="text-gray-600 mb-6">
-          I'm a third-year BTech student specializing in Information Technology at SNIST with Roll No. 22311A1220. 
-          My academic journey has equipped me with strong foundations in programming, data structures, and web development.
-        </p>
-
-        <div className="mb-6">
-          <h4 className="text-lg font-medium mb-3 text-gray-800">Education</h4>
-          <div className="bg-gray-50 p-4 rounded-md">
-            <p className="font-medium text-indigo-600">BTech in Information Technology</p>
-            <p className="text-gray-600">Sreenidhi Institute of Science and Technology (SNIST)</p>
-            <p className="text-gray-500">2022 - 2026</p>
+      <main className="container mx-auto px-4 pt-16 relative z-10">
+        {/* Hero Section */}
+        <section id="home" className="min-h-screen flex flex-col justify-center">
+          <div className="max-w-3xl mx-auto text-center md:text-left">
+            <div className="mb-4 inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text">
+              <h2 className="text-xl font-medium">Hello, I'm</h2>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              Harini Jakinapelly
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-400 mb-8">
+              Software Developer & DSA Problem Solver
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+              <a 
+                href="#contact"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection('contact');
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:opacity-90 transition-all duration-300 flex items-center gap-2"
+              >
+                Get in Touch <ChevronRight size={16} />
+              </a>
+              <a 
+                href="https://github.com/HariniRao25" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-6 py-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-all duration-300 flex items-center gap-2"
+              >
+                View GitHub <Github size={16} />
+              </a>
+            </div>
           </div>
-        </div>
-
-        <div className="mb-6">
-          <h4 className="text-lg font-medium mb-3 text-gray-800">Skills</h4>
-          <div className="flex flex-wrap gap-2">
-            <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">Java</span>
-            <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">Python</span>
-            <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">HTML/CSS</span>
-            <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">JavaScript</span>
-            <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">React</span>
-            <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">SQL</span>
-            <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">Data Structures</span>
-            <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">Algorithms</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-      {/* Projects Section */}
-      <section id="projects" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">My Projects</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Project 1 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="h-48 bg-indigo-200 flex items-center justify-center">
-                <div className="text-indigo-600 text-6xl font-bold">&lt;/&gt;</div>
+          {/* 3D model visualization (placeholder) */}
+          <div className="mt-16 flex justify-center">
+            <div className="w-64 h-64 md:w-96 md:h-96 relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full animate-pulse opacity-30"></div>
+              <div className="absolute inset-4 bg-gradient-to-r from-blue-600 to-purple-700 rounded-full animate-pulse opacity-40"></div>
+              <div className="absolute inset-8 bg-gradient-to-r from-blue-700 to-purple-800 rounded-full animate-pulse opacity-50"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-4xl font-bold">3D</div>
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Student Management System</h3>
-                <p className="text-gray-600 mb-4">
-                  A comprehensive system to manage student data, attendance, and grades using Java and MySQL.
-                </p>
-                <div className="flex justify-between items-center">
-                  <div className="flex space-x-2">
-                    <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm">Java</span>
-                    <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm">MySQL</span>
-                  </div>
-                  <div className="flex space-x-2">
-                    <a href="#" className="text-gray-500 hover:text-gray-700">
-                      <span className="inline-block w-5 h-5 text-center font-medium">G</span>
-                    </a>
-                    <a href="#" className="text-gray-500 hover:text-gray-700">
-                      <span className="inline-block w-5 h-5 text-center">↗</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Project 2 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="h-48 bg-indigo-200 flex items-center justify-center">
-                <div className="text-indigo-600 text-6xl font-bold">📚</div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">E-Learning Platform</h3>
-                <p className="text-gray-600 mb-4">
-                  An interactive web application for online learning with course management features.
-                </p>
-                <div className="flex justify-between items-center">
-                  <div className="flex space-x-2">
-                    <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm">React</span>
-                    <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm">Node.js</span>
-                  </div>
-                  <div className="flex space-x-2">
-                    <a href="#" className="text-gray-500 hover:text-gray-700">
-                      <span className="inline-block w-5 h-5 text-center font-medium">G</span>
-                    </a>
-                    <a href="#" className="text-gray-500 hover:text-gray-700">
-                      <span className="inline-block w-5 h-5 text-center">↗</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Project 3 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-  <div className="h-48 bg-indigo-200 flex items-center justify-center">
-    {/* Tracker Icon */}
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-20 w-20 text-indigo-600"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 8c1.657 0 3 1.343 3 3v1h2a2 2 0 012 2v4a2 2 0 01-2 2h-4v-5h-2v5H8a2 2 0 01-2-2v-4a2 2 0 012-2h2v-1c0-1.657 1.343-3 3-3z"
-      />
-    </svg>
-  </div>
-  <div className="p-6">
-    <h3 className="text-xl font-semibold mb-2 text-gray-800">Smart Health Tracker</h3>
-    <p className="text-gray-600 mb-4">
-      A mobile application that tracks health metrics and provides personalized recommendations.
-    </p>
-    <div className="flex justify-between items-center">
-      <div className="flex space-x-2">
-        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm">Flutter</span>
-        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm">Firebase</span>
-      </div>
-      <div className="flex space-x-2">
-        <a href="#" className="text-gray-500 hover:text-gray-700">
-          <span className="inline-block w-5 h-5 text-center font-medium">G</span>
-        </a>
-        <a href="#" className="text-gray-500 hover:text-gray-700">
-          <span className="inline-block w-5 h-5 text-center">↗</span>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">Contact Me</h2>
-          
-          <div className="max-w-3xl mx-auto bg-gray-50 rounded-lg shadow-md p-8">
-            <div className="flex flex-col space-y-6">
-              <div className="flex items-center">
-                <div className="text-indigo-600 mr-4 text-xl">📱</div>
-                <div>
-                  <h3 className="font-medium text-gray-800">Phone</h3>
-                  <p className="text-gray-600">22311A1220</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="text-indigo-600 mr-4 text-xl">✉️</div>
-                <div>
-                  <h3 className="font-medium text-gray-800">Email</h3>
-                  <p className="text-gray-600">harini@example.com</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="text-indigo-600 mr-4 text-xl">💼</div>
-                <div>
-                  <h3 className="font-medium text-gray-800">LinkedIn</h3>
-                  <p className="text-gray-600">linkedin.com/in/harini</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="text-indigo-600 mr-4 text-xl">🔄</div>
-                <div>
-                  <h3 className="font-medium text-gray-800">GitHub</h3>
-                  <p className="text-gray-600">github.com/harini</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-10 pt-10 border-t border-gray-200">
-              <h3 className="text-xl font-semibold mb-6 text-center text-gray-800">Send me a message</h3>
-              
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-gray-700 mb-2">Name</label>
-                    <input 
-                      type="text" 
-                      id="name" 
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-gray-700 mb-2">Email</label>
-                    <input 
-                      type="email" 
-                      id="email" 
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label htmlFor="subject" className="block text-gray-700 mb-2">Subject</label>
-                  <input 
-                    type="text" 
-                    id="subject" 
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="message" className="block text-gray-700 mb-2">Message</label>
-                  <textarea 
-                    id="message" 
-                    rows="4" 
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  ></textarea>
-                </div>
-                
-                <div>
-                  <button 
-                    type="submit" 
-                    className="w-full bg-indigo-600 text-white py-3 rounded-md font-medium hover:bg-indigo-700 transition-colors"
-                  >
-                    Send Message
-                  </button>
-                </div>
-              </form>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* About Section */}
+        <section id="about" className="py-16 md:py-24">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+              About Me
+            </h2>
+            <div className="bg-gray-800/50 backdrop-blur rounded-xl p-6 md:p-8 border border-gray-700/50 shadow-lg">
+              <p className="text-lg mb-4">
+                I'm Harini, a software developer with strong experience in solving DSA problems and web designing. I am currently pursuing my B.Tech from Sreenidhi Institute of Science and Technology with a CGPA of 9.4.
+              </p>
+              <p className="text-lg mb-4">
+                I'm passionate about problem-solving and love working with technologies like Java, SQL, and modern web tools. My focus is on creating efficient, scalable solutions to complex problems.
+              </p>
+              <p className="text-lg">
+                When I'm not coding, I enjoy exploring new technologies and continuously enhancing my skills through practice and real-world applications.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Skills Section */}
+        <section id="skills" className="py-16 md:py-24">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+              Technical Skills
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <SkillCard 
+                title="Programming" 
+                icon={<Code />} 
+                skills={[
+                  { name: "Java", proficiency: 70 },
+                  { name: "Data Structures", proficiency: 85 },
+                  { name: "Algorithms", proficiency: 85 }
+                ]}
+              />
+              <SkillCard 
+                title="Database" 
+                icon={<Database />} 
+                skills={[
+                  { name: "SQL", proficiency: 90 }
+                ]}
+              />
+              <SkillCard 
+                title="Web Development" 
+                icon={<Globe />} 
+                skills={[
+                  { name: "HTML", proficiency: 90 },
+                  { name: "CSS", proficiency: 80 },
+                  { name: "JavaScript", proficiency: 60 }
+                ]}
+              />
+              <SkillCard 
+                title="Problem Solving" 
+                icon={<Terminal />} 
+                skills={[
+                  { name: "DSA Problem Solving", proficiency: 85 },
+                  { name: "Logical Thinking", proficiency: 90 }
+                ]}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Education Section */}
+        <section id="education" className="py-16 md:py-24">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+              Education
+            </h2>
+            <div className="space-y-6">
+              <EducationCard 
+                degree="B.Tech"
+                institution="Sreenidhi Institute of Science and Technology"
+                duration="Current"
+                description="CGPA: 9.4"
+              />
+              <EducationCard 
+                degree="Intermediate (MPC Stream)"
+                institution="Alphores Junior College, Karimnagar"
+                duration="Completed"
+              />
+              <EducationCard 
+                degree="SSC"
+                institution="Vivekavardhini High School"
+                duration="Completed"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Projects Section */}
+        <section id="projects" className="py-16 md:py-24">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+              Projects
+            </h2>
+            <div className="grid grid-cols-1 gap-6">
+              <ProjectCard 
+                title="LRU Cache Implementation"
+                description="Implemented an LRU (Least Recently Used) Cache in Java using a LinkedList. This project demonstrates understanding of data structures, especially memory management and access optimization through caching techniques."
+                technologies={["Java", "Data Structures", "Algorithms"]}
+                githubLink="https://github.com/HariniRao25"
+              />
+              {/* Add more projects as needed */}
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="py-16 md:py-24">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+              Get in Touch
+            </h2>
+            <div className="bg-gray-800/50 backdrop-blur rounded-xl p-6 md:p-8 border border-gray-700/50 shadow-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ContactCard 
+                  icon={<Phone />}
+                  title="Phone"
+                  detail="6305985003"
+                  link="tel:6305985003"
+                />
+                <ContactCard 
+                  icon={<Mail />}
+                  title="Email"
+                  detail="harinijakinapelly123@gmail.com"
+                  link="mailto:harinijakinapelly123@gmail.com"
+                />
+                <ContactCard 
+                  icon={<Github />}
+                  title="GitHub"
+                  detail="github.com/HariniRao25"
+                  link="https://github.com/HariniRao25"
+                  external={true}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-6">
-        <div className="container mx-auto px-4 text-center">
-          <p>&copy; {new Date().getFullYear()} Harini. All rights reserved.</p>
-          <div className="flex justify-center space-x-4 mt-4">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              <span className="inline-block">🔄</span>
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              <span className="inline-block">💼</span>
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              <span className="inline-block">✉️</span>
-            </a>
+      <footer className="bg-gray-900 py-8 border-t border-gray-800 relative z-10">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <p className="text-gray-400">
+              © {new Date().getFullYear()} Harini Jakinapelly. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
     </div>
+  );
+}
+
+// Skill Card Component
+function SkillCard({ title, icon, skills }) {
+  return (
+    <div className="bg-gray-800/50 backdrop-blur rounded-xl p-6 border border-gray-700/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-blue-500/30">
+      <div className="flex items-center mb-4">
+        <div className="mr-4 p-2 bg-blue-500/20 rounded-lg text-blue-400">
+          {icon}
+        </div>
+        <h3 className="text-xl font-bold">{title}</h3>
+      </div>
+      <div className="space-y-4">
+        {skills.map((skill, index) => (
+          <div key={index}>
+            <div className="flex justify-between mb-1">
+              <span className="text-gray-300">{skill.name}</span>
+              <span className="text-blue-400">{skill.proficiency}%</span>
+            </div>
+            <div className="w-full bg-gray-700 rounded-full h-2">
+              <div 
+                className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full" 
+                style={{ width: `${skill.proficiency}%` }}
+              ></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Education Card Component
+function EducationCard({ degree, institution, duration, description }) {
+  return (
+    <div className="bg-gray-800/50 backdrop-blur rounded-xl p-6 border border-gray-700/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-blue-500/30">
+      <div className="flex items-start md:items-center flex-col md:flex-row">
+        <div className="mr-4 p-2 bg-blue-500/20 rounded-lg text-blue-400 md:mb-0 mb-4">
+          <BookOpen />
+        </div>
+        <div>
+          <h3 className="text-xl font-bold text-white">{degree}</h3>
+          <p className="text-blue-400">{institution}</p>
+          <p className="text-gray-400 mt-1">{duration}</p>
+          {description && <p className="text-gray-300 mt-2">{description}</p>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Project Card Component
+function ProjectCard({ title, description, technologies, githubLink }) {
+  return (
+    <div className="bg-gray-800/50 backdrop-blur rounded-xl p-6 border border-gray-700/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-blue-500/30">
+      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-gray-300 mb-4">{description}</p>
+      <div className="mb-4">
+        <div className="flex flex-wrap gap-2">
+          {technologies.map((tech, index) => (
+            <span 
+              key={index}
+              className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+      {githubLink && (
+        <a 
+          href={githubLink} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
+        >
+          <Github size={16} /> View on GitHub <ExternalLink size={14} />
+        </a>
+      )}
+    </div>
+  );
+}
+
+// Contact Card Component
+function ContactCard({ icon, title, detail, link, external }) {
+  return (
+    <a 
+      href={link}
+      target={external ? "_blank" : "_self"}
+      rel={external ? "noopener noreferrer" : ""}
+      className="bg-gray-800/70 backdrop-blur rounded-xl p-6 border border-gray-700/50 shadow-lg hover:border-blue-500/30 hover:shadow-xl transition-all duration-300 flex items-center"
+    >
+      <div className="mr-4 p-2 bg-blue-500/20 rounded-lg text-blue-400">
+        {icon}
+      </div>
+      <div>
+        <h3 className="text-lg font-bold text-white">{title}</h3>
+        <p className="text-gray-300">{detail}</p>
+      </div>
+      {external && (
+        <ExternalLink size={16} className="ml-auto text-gray-400" />
+      )}
+    </a>
   );
 }
